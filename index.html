@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do List Application</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            color: #333;
+            margin-top: 20px;
+        }
+
+        div {
+            margin: 20px;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            width: 300px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            width: 350px;
+        }
+
+        li {
+            background: #fff;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        li.completed {
+            text-decoration: line-through;
+            color: #999;
+        }
+
+        li button {
+            padding: 5px 10px;
+            font-size: 0.9em;
+            background-color: #dc3545;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+        }
+
+        li button:hover {
+            background-color: #a71d2a;
+        }
+    </style>
+</head>
+<body>
+    <h1>To-Do List</h1>
+
+    <!-- Input field and button for adding tasks -->
+    <div>
+        <input type="text" id="taskInput" placeholder="Enter a new task">
+        <button id="addTaskBtn">Add</button>
+    </div>
+
+    <!-- List to display tasks -->
+    <ul id="taskList"></ul>
+
+    <script>
+     // Get references to DOM elements
+const taskInput = document.getElementById('taskInput');
+const addTaskBtn = document.getElementById('addTaskBtn');
+const taskList = document.getElementById('taskList');
+
+// Array to store tasks
+let tasks = [];
+let taskId = 0; // Unique ID for tasks
+
+// Function to render tasks on the page
+function renderTasks() {
+    taskList.innerHTML = ''; // Clear the current list
+
+    tasks.forEach((task) => {
+        const li = document.createElement('li'); // Create a list item
+        li.className = task.completed ? 'completed' : '';
+
+        // Task text (click to toggle completion)
+        li.textContent = task.text;
+        li.addEventListener('click', () => toggleComplete(task.id));
+
+        // Delete button for the task
+        const deleteBtn = document.createElement('button');
+        deleteBtn.textContent = 'Delete';
+        deleteBtn.addEventListener('click', () => deleteTask(task.id));
+
+        li.appendChild(deleteBtn); // Append the delete button to the list item
+        taskList.appendChild(li); // Append the list item to the list
+    });
+}
+
+// Function to add a new task
+function addTask() {
+    const taskText = taskInput.value.trim();
+    if (taskText !== '') {
+        tasks.push({ id: taskId++, text: taskText, completed: false }); // Add task with unique ID
+        taskInput.value = ''; // Clear input field
+        renderTasks(); // Re-render the task list
+    }
+}
+
+// Function to delete a task
+function deleteTask(id) {
+    tasks = tasks.filter(task => task.id !== id); // Remove task by ID
+    renderTasks(); // Re-render the task list
+}
+
+// Function to toggle task completion
+function toggleComplete(id) {
+    const task = tasks.find(task => task.id === id); // Find task by ID
+    if (task) {
+        task.completed = !task.completed; // Toggle the completed state
+        renderTasks(); // Re-render the task list
+    }
+}
+
+// Event listener for the "Add" button
+addTaskBtn.addEventListener('click', addTask);
+
+// Allow pressing "Enter" to add a task
+taskInput.addEventListener('keypress', (event) => {
+    if (event.key === 'Enter') {
+        addTask();
+    }
+});
+
+    </script>
+</body>
+</html>
